@@ -1,0 +1,24 @@
+html {
+  font-family: 'helvetica neue', helvetica, arial, sans-serif;
+}
+
+.heading-text1 {
+  color: white;
+  margin-bottom: 5rem;
+  font-family: 'Courgette', cursive;
+}
+
+.heading-text2 {
+  color: white;
+  margin-bottom: 2rem;
+}
+
+.main-div {
+  background-image:url("bkground.jpg");
+  padding: 25px;
+  margin: auto;
+}
+
+.arrow {
+line-height: 40px;
+}
