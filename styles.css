@@ -1,5 +1,14 @@
+* {
+  box-sizing: border-box;
+}
+
 html {
   font-family: 'helvetica neue', helvetica, arial, sans-serif;
+}
+
+p {
+  text-align: center;
+  color: white;
 }
 
 .heading-text1 {

@@ -5,29 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Currency Converter</title>
-  <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
   <link href="https://fonts.googleapis.com/css?family=Courgette" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
     <div class="main-div">
       <div class="row">
-        <div class="col-sm-12 col-md-6 col-lg-8">
+        <div class="col-md-12">
           <h4 class="heading-text1">Currency Converter</h4>
-          <h2 class="text-center heading-text2">Currency Exchange Rates</h2>
+          <h2 class="text-center heading-text2">Latest Currency Exchange Rates</h2>
         </div>
       </div>
       <div class="form-group row">
         <div class="form-group">
           <div class="col-md-10">
-            <input type="text" class="form-control" placeholder="1">
+            <input type="text" class="form-control" placeholder="Enter an amount" id="currAmt">
           </div>
         </div>
         <div class="form-group">
           <div class="col-md-12">
             <!-- <label for="">From</label> -->
-            <select class="form-control" id="exampleFormControlSelect1">
+            <select class="form-control" id="select1">
               <option value="none">Please choose currency</option>
             </select>
           </div>
@@ -38,22 +38,28 @@
         <div class="form-group">
           <div class="col-md-12">
                 <!-- <label for="">To</label> -->
-                <select class="form-control" id="exampleFormControlSelect1">
+                <select class="form-control" id="select2">
                   <option value="none">Please choose currency</option>
                 </select>
           </div>
         </div>
         <div class="form-group">
           <div class="col-md-2">
-            <button type="button" class="btn btn-danger">CONVERT</button>
+            <button type="button" class="btn btn-danger" id = "convert">CONVERT</button>
           </div>
+          
         </div>
       </div>
+              <div class="text-center form-group">
+                    <input type="text" disabled id="currencyValue">
+                  </div>
+      <p>Convert all major world currencies with our currency converter</p>
     </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
