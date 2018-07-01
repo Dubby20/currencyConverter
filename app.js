@@ -1,94 +1,114 @@
-const currFromSelect = document.getElementById('select1');
-const currToSelect = document.getElementById('select2');
-const convertBtn = document.getElementById('convert');
+let currFromSelect = document.getElementById('select1');
+let currToSelect = document.getElementById('select2');
+let convertBtn = document.getElementById('convert');
+let fromCurr = '';
+let toCurr = '';
 
+currFromSelect.addEventListener('change', () => {
+fromCurr = currFromSelect.value;
+})
 
+currToSelect.addEventListener('change', () => {
+  toCurr = currToSelect.value;
+})
 
 const CURR_URL = "https://free.currencyconverterapi.com/api/v5/currencies";
 
 fetch(CURR_URL)
-.then(function(response) {
-  console.log(response.ok)
+.then((response) => {
+  // console.log(response.ok)
   const bodyType = response.json();
   return bodyType;
 })
-.then(function(jsonObj) {
+.then((jsonObj) => {
   // console.log(jsonObj.results)
-  let currencies = jsonObj.results
+
+  let currenciesData = jsonObj.results;
+
+  let currencies = Object.keys(currenciesData).sort((a, b) => {
+      return a.charCodeAt(0) - b.charCodeAt(0);
+  });
+
+  currencySymbols = {};
+
+  Object.values(currenciesData).forEach((item) => {
+    var id = item.id;
+    //delete item['id'];
+    currencySymbols[id] = item.currencySymbol;
+})
+
+
 for(let i in currencies) {
+  
   let option = document.createElement('option')
   let option2 = document.createElement('option')
 
-  option.value = currencies[i].id;
+  option.value = currencies[i];
   // console.log(option.value)
-  if(option.value === 'USD') {
-    option.selected = true;
-  }
-  option2.value = currencies[i].id
-  option.innerHTML = currencies[i].id;
-  option2.innerHTML = currencies[i].id
+  // if(option.value === 'USD') {
+  //   option.selected = true;
+  // }
+  option2.value = currencies[i];
+  option.innerHTML = currencies[i];
+  option2.innerHTML = currencies[i];
 currFromSelect.appendChild(option);
 currToSelect.appendChild(option2)
 }
 
-}).catch(function(error) {
+}).catch((error) => {
   console.log("Fetch operation failed: ", error.message)
 });
 
 
-convertBtn.onclick = () => {
 
-
-}
-
-
-
-
-
-function convertCurrency() {
+const convertCurrency =  () => {
   let currAmt = document.getElementById('currAmt');
-  // currencyAmt = currAmt.value;
-  currAmt.value = ""
+  
+  currAmtVal = currAmt.value;
+  fromCurr = encodeURIComponent(fromCurr.trim()); 
+  toCurr = encodeURIComponent(toCurr.trim());
+  let query = `${fromCurr}_${toCurr}`;
+  console.log(query)
 
-  let fromCurr = currFromSelect.value;
-  let toCurr = currToSelect.value;
+  const url =`https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=ultra`;
 
-  fromCurr = encodeURIComponent(fromCurr);
-  toCurr = encodeURIComponent(toCurr);
-  let query = `${fromCurr} _ ${toCurr}`;
-
-  const url = 'https://free.currencyconverterapi.com/api/v5/convert?q='
-  + query + '&compact=ultra';
+  currAmt.value = "";
 
   fetch(url)
-  .then(function(response) {
+  .then((response) => {
     // console.log(response.ok)
-    const objType = response.json();
-    return objType;
+    return response.json();
   })
-  .then(function(data) {
-    console.log(data.query)
-    // let datas = 
-    // for(let )
-  }).catch(function(error) {
+  .then((data) => {
+    console.log(data)
+     let conversionCurrency = Object.keys(data)
+     let conversionRate = Object.values(data)
+     let conversion = conversionRate[0] * Number(currAmtVal)
+     result(conversion, currencySymbols[toCurr])
+    //  console.log(result)
+  }).catch((error) => {
     console.log("Query failed:", error.message)
   });
 
 
-
 }
 
 
-convertCurrency()
+
+convertBtn.addEventListener('click', (e) => {
+  e.preventDefault()
+  convertCurrency();
+})
+
+const result = (value, symbol)=>  {
+let currencyValue = document.getElementById('currencyValue');
+currencyValue.value = symbol + value.toFixed(2);
+}
 
 
 
 
 
+//  document.addEventListener('DOMContentLoaded', () => {
 
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
-  
-  })
+//     })
