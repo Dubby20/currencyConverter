@@ -5,7 +5,7 @@
 const cacheName = 'cache-v1';
 
     const filesToCache = [
-                './offline.html',
+                // './offline.html',
                   './app.js',
                   './index.html',
                   'styles.css',
@@ -17,7 +17,7 @@ const cacheName = 'cache-v1';
       event.waitUntil(
        caches.open(cacheName)
        .then(cache => {
-           console.info('Caching of files Initiation');
+           console.info('Caching of files');
            return cache.addAll(filesToCache);
        })
      );
