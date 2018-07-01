@@ -1,9 +1,6 @@
 // import IndexedDB from "./IndexedDB";
-// const IndexedDB = require('./IndexedDB');
 
 'use strict';
-
-importScripts('./IndexedDB.js');
 
 // Incrementing CACHE_VERSION will kick off the install event and force previously cached
 // resources to be cached again.
@@ -63,13 +60,14 @@ function writeDB(db, req, res, overrideKey){
 
 
 self.addEventListener('install', event => {
+  importScripts('./IndexedDB.js');
   event.waitUntil(
     /*fetch(OFFLINE_URL)).then(function(response) {*/
       caches.open(CURRENT_CACHES.offline).then((cache) => {
         //return cache.put(OFFLINE_URL, response);
         return cache.addAll(
           [
-            '.',
+            './offline.html',
             './app.js',
             './index.html',
             'styles.css',
@@ -111,45 +109,28 @@ let _self = self;
 
 self.addEventListener('fetch', event => {
 
-  let DB = IndexedDB.getDB(_self);
+  // let DB = IndexedDB.getDB(_self);
 
-  if (event.request.mode === 'navigate' ||
-      (event.request.headers.get('accept').includes('*/*'))) {
-    console.log('Handling fetch event for', event.request.url);
-    event.respondWith(
-      fetch(event.request).then((response) => {
+     caches.open(CURRENT_CACHES.offline).then((cache) => {
+        return fetch(event.target).then((response) => {
+          if(event.request.headers.get('accept').indexOf('*/*') + 1
+        && response.headers.get('content-type').indexOf('json') + 1) {
+          return writeDB(DB, event.request, response, (event.request.url.indexOf('currencies')
+        +1 ? 'curr': null));
+        } else {
+          cache.put(event.request, response.clone());
           return response;
-      }).catch(error => {
-        // The catch is only triggered if fetch() throws an exception, which will most likely
-        // happen due to the server being unreachable.
-        // If fetch() returns a valid HTTP response with an response code in the 4xx or 5xx
-        // range, the catch() will NOT be called. If you need custom handling for 4xx or 5xx
-        console.log('Fetch failed; returning offline page instead.', error);
-        return caches.match(OFFLINE_URL);
+        }
+        }).catch((error) => {
+          console.log('Fetch failed: trying alternatives...', error);
+          cache.match(event.request).then((response) => {
+            return response || readDB(DB, event.request, (event.request.url.indexOf('currencies')
+          + 1 ? 'curr' : null));
+          }).catch(() => {
+            return cache.match(OFFLINE_URL);
+          });
+        });
       })
-    );
-  }else if(event.request.url.indexOf('free.currencyconverterapi.com/api/v5/convert') + 1 
-      && event.request.method === 'GET'){
-        event.respondWith(
-           fetch(event.request).then((response) => {
-                return writeDB(DB, event.request, response);
-           }).catch((error)=> {
-                return readDB(DB, event.request);
-           })
-        )
-  }else if(event.request.url.indexOf('free.currencyconverterapi.com/api/v5/currencies') + 1 
-  && event.request.method === 'GET'){
-    event.respondWith(
-      fetch(event.request).then((response)=> {
-           return writeDB(DB, event.request, response, 'curr');
-      }).catch((error) => {
-           return readDB(DB, event.request, 'curr');
-      })
-   )
-  }
-
-  // If our if() condition is false, then this fetch handler won't intercept the request.
-  // If there are any other fetch handlers registered, they will get a chance to call
-  // event.respondWith(). If no fetch handlers call event.respondWith(), the request will be
-  // handled by the browser as if there were no service worker involvement.
-});
+    // );
+//   
+ });

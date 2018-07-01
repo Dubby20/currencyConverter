@@ -1,7 +1,7 @@
 
 let db;
 
-self.IndexedDB = {
+ self.IndexedDB = {
       getDB(target){
         
           var indexedDB = target.indexedDB || target.mozIndexedDB || target.webkitIndexedDB || target.msIndexedDB || target.shimIndexedDB;
